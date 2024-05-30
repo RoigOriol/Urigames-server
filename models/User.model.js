@@ -17,7 +17,14 @@ const userSchema = new Schema(
     username:{
       type: String,
       required: [true, 'Username is required.']
-    }
+    },
+//PARA HACER ADMIN
+role:{
+type: String,
+enum: ["user", "admin"], // viene del entrono de desarrollo. El user creado siempre va a ser user y le ponemos admin nosotros
+default: "user"
+}
+
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`    

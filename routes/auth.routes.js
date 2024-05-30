@@ -139,10 +139,10 @@ router.get("/private-route-example", isTokenValid, (req, res) => {
   res.json({ data: "ejemplo información solo para usuarios logeados" });
 });
 
-// ejemplo de ruta solo para admins
+// EJEMPLO DE RUTA SOLO PARA ADMIN
 router.get("/admin-route-example", isTokenValid, isUserAdmin, (req, res) => {
   res.json({
-    data: "información super secreta de admin. Como conquistar el mundo",
+    data: "información de admin.",
   });
 });
 

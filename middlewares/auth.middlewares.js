@@ -28,11 +28,11 @@ function isTokenValid(req, res, next) {
 function isUserAdmin(req, res, next) {
   console.log(req.payload);
   if (req.payload.role === "admin") {
-    next(); // continua con la ruta
+    next(); // continua con la ruta SIEMPRE HACERLO
   } else {
     res
       .status(401)
-      .json({ errorMessage: "No tienes permisos, solo admin. fuera de aqui" });
+      .json({ errorMessage: "No tienes permisos de administrador." });
   }
 }
 
