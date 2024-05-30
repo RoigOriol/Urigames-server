@@ -3,6 +3,11 @@ const User = require("../models/User.model");
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+const {
+  isTokenValid,
+  isUserAdmin,
+} = require("../middlewares/auth.middlewares.js");
 //aqui van todas las rutas de autenticación
 
 // POST "/api/auth/signup" => recibir data(mail, username y password) del usuario y crearlo en la BD
@@ -116,6 +121,29 @@ router.post("/login", async (req, res, next) => {
     next(error);
   }
 });
-//GET "/api/auth/verify" => recibe el token y lo valida
+
+// GET "/api/auth/verify" => recibir el token y validarlo.
+router.get("/verify", isTokenValid, (req, res, next) => {
+  // que pasa si la ruta necesita saber quien es el usuario
+  console.log(req.payload); //! ESTE ES EL USUARIO QUE ESTÁ HACIENDO ESTA LLAMADA
+  //! ESTO AYUDA A SABER CUANDO CREAN DOCUMENTOS, QUIEN LO ESTA CREADO, O QUIEN PUEDE EDITARLO, QUIEN PUEDE BORRARLO.
+
+  res.status(200).json({ payload: req.payload }); // esta info la requiere el FE
+});
+
+// ejemplo de ruta que envia información solo para usuarios logeados (privado)
+router.get("/private-route-example", isTokenValid, (req, res) => {
+  // el isTokenValid es lo que haría que solo usuarios logeados puedes llegar
+  // con el req.payload, el backend sabe quien es el usuario haciendo la llamada
+  console.log(req.payload);
+  res.json({ data: "ejemplo información solo para usuarios logeados" });
+});
+
+// ejemplo de ruta solo para admins
+router.get("/admin-route-example", isTokenValid, isUserAdmin, (req, res) => {
+  res.json({
+    data: "información super secreta de admin. Como conquistar el mundo",
+  });
+});
 
 module.exports = router;
