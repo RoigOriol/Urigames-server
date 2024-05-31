@@ -1,34 +1,48 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
+    username: {
+      type: String,
+      required: [true, "Username is required."],
+    },
     email: {
       type: String,
-      required: [true, 'Email is required.'],
+      required: [true, "Email is required."],
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
     },
     password: {
       type: String,
-      required: [true, 'Password is required.']
+      required: [true, "Password is required."],
     },
-    username:{
-      type: String,
-      required: [true, 'Username is required.']
-    },
-//PARA HACER ADMIN
-role:{
-type: String,
-enum: ["user", "admin"], // viene del entrono de desarrollo. El user creado siempre va a ser user y le ponemos admin nosotros
-default: "user"
-}
 
+    gameCollection: {
+      type:[ mongoose.Schema.Types.ObjectId ],
+      ref: "Game",
+    },
+    
+    favorites: {
+      type:[ mongoose.Schema.Types.ObjectId ],
+      ref: "Game",
+    },
+    
+    userImg: {
+      type: String,
+    },
+
+    //PARA HACER ADMIN
+    role: {
+      type: String,
+      enum: ["user", "admin"], // viene del entrono de desarrollo. El user creado siempre va a ser user y le ponemos admin nosotros en la base de datos
+      default: "user",
+    },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`    
-    timestamps: true
+    // este segundo objeto añade propiedades adicionales: createdAt y updatedAt
+    timestamps: true,
   }
 );
 
