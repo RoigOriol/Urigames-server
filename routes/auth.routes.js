@@ -1,5 +1,5 @@
 const User = require("../models/User.model");
-
+const Games = require("../models/Game.model");
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -49,6 +49,7 @@ router.post("/signup", async (req, res, next) => {
       .status(400)
       .json({ errorMessage: "Nombre de usuario en formato incorrecto" }); // el cliente me está dando la info incorrecta
   }
+
   const salt = await bcrypt.genSalt(12);
   const hashPassword = await bcrypt.hash(password, salt);
 
@@ -110,13 +111,13 @@ router.post("/login", async (req, res, next) => {
       //cualquier información estática del usuario deberia ir aqui
     };
 
-    const AuthToken = jwt.sign(
+    const authToken = jwt.sign(
       payload, //el contenido del token
       process.env.TOKEN_SECRET, // ESTA ÉS LA CLAVE DEL SERVIDOR PARA CIFRAR TODOS LOS TOQUENS
       { algorithm: "HS256", expiresIn: "7d" } //configuraciones del token
     );
 
-    res.status(200).json({ AuthToken: AuthToken });
+    res.status(200).json({ authToken: authToken });
   } catch (error) {
     next(error);
   }
@@ -132,12 +133,6 @@ router.get("/verify", isTokenValid, (req, res, next) => {
 });
 
 // ejemplo de ruta que envia información solo para usuarios logeados (privado)
-router.get("/private-route-example", isTokenValid, (req, res) => {
-  // el isTokenValid es lo que haría que solo usuarios logeados puedes llegar
-  // con el req.payload, el backend sabe quien es el usuario haciendo la llamada
-  console.log(req.payload);
-  res.json({ data: "ejemplo información solo para usuarios logeados" });
-});
 
 // EJEMPLO DE RUTA SOLO PARA ADMIN
 router.get("/admin-route-example", isTokenValid, isUserAdmin, (req, res) => {

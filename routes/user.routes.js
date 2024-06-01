@@ -1,8 +1,16 @@
 const router = require("express").Router();
 const User = require("../models/User.model.js");
 
+router.get("/:userId", async (req, res, next) => {
+  console.log(req.params);
 
-//! try catch
+  try {
+    const response = await User.findById(req.params.userId);
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // POST creamos users
 router.post("/", async (req, res, next) => {
@@ -17,7 +25,7 @@ router.post("/", async (req, res, next) => {
       favorites: req.body.favorites,
       friends: req.body.friends,
       userImg: req.body.userImg,
-      role: req.body.role
+      role: req.body.role,
     });
 
     console.log("user creado");
@@ -27,9 +35,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-
-//! ACCIONES QUE MODIFICAN EL USUARIO: subir foto de perfil/ / añadir amigos/ / favorites/ gameCollection: 
-
+//! ACCIONES QUE MODIFICAN EL USUARIO: subir foto de perfil/ / añadir amigos/ / favorites/ gameCollection:
 
 //! preguntar jorge si el admin es el creador de los juegos si game collection i favoriteos va en juego o en usuario.
 
@@ -46,7 +52,7 @@ router.put("/:userId", async (req, res, next) => {
         favorites: req.body.favorites,
         friends: req.body.friends,
         userImg: req.body.userImg,
-        role: req.body.role
+        role: req.body.role,
       },
       { new: true }
     );
@@ -61,7 +67,9 @@ router.put("/:userId", async (req, res, next) => {
 // Editar usuario parcial PATCH
 router.patch("/:userId", async (req, res, next) => {
   try {
-    const response = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
+    const response = await User.findByIdAndUpdate(req.params.userId, req.body, {
+      new: true,
+    });
     res.status(200).json(response);
   } catch (error) {
     next(error);

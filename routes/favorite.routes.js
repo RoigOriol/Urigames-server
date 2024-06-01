@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { isTokenValid } = require("../middlewares/auth.middlewares.js");
 const User = require("../models/User.model.js");
 
-router.patch("/:gameId", isTokenValid, async (req, res, next) => {
+router.patch("/:gameId/favorite", isTokenValid, async (req, res, next) => {
   // cogemos el user desde la BD
   try {
     // favoritos

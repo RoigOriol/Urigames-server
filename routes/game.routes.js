@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Game = require("../models/Game.model.js");
 const { isTokenValid } = require("../middlewares/auth.middlewares");
-isTokenValid
+isTokenValid;
 
 // CREAR juegos POST
 router.post("/", (req, res, next) => {
@@ -17,7 +17,7 @@ router.post("/", (req, res, next) => {
     description: req.body.description,
     image: req.body.image,
     playTime: req.body.playTime,
-    user: req.payload._id
+    user: req.payload._id,
   })
     .then((response) => {
       console.log("game creado");
@@ -99,7 +99,6 @@ router.put("/:gameId", async (req, res, next) => {
   }
 });
 
-
 //! preguntar jorge //! preguntar jorge http://localhost:5005/api/game/game/search?genre=Fantasy posible redundancia con la llamada anterior?
 
 /*router.get("/game/search", async (req, res, next) => {
@@ -113,21 +112,18 @@ router.put("/:gameId", async (req, res, next) => {
   }
 }); */
 
-
-
-
-
 //Editar juego parcial Patch
 
 router.patch("/:gameId", async (req, res, next) => {
-    try {
-      const response = await Game.findByIdAndUpdate(req.params.gameId, req.body, { new: true });
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  });
-
+  try {
+    const response = await Game.findByIdAndUpdate(req.params.gameId, req.body, {
+      new: true,
+    });
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Borrar juego DELETE
 router.delete("/:gameId", async (req, res, next) => {
