@@ -1,16 +1,22 @@
-const mongoose = require("mongoose")
-const commentSchema= new mongoose.Schema({
-    comment:{
-        type: String,
-    },
-    //!DUDAS todo esto se crea en la base de datos? Como se pone la id del juego, lo tiene que poner el admin? viene del frontend , userId viene del token
-    userId:{
-        type: String,
-    },
-    gameId:{
-        type: String,
-    }
-})
-const Comment = mongoose.model("Comment", commentSchema)
+const mongoose = require("mongoose");
 
-module.exports = Comment
+const commentSchema = new mongoose.Schema({
+  comment: {
+    type: String,
+    required: [true, "Description is required."]
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  gameId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Game"
+  }
+}, {
+  timestamps: true
+});
+
+const Comment = mongoose.model("Comment", commentSchema);
+
+module.exports = Comment;

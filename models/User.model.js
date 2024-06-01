@@ -23,12 +23,17 @@ const userSchema = new Schema(
       type:[ mongoose.Schema.Types.ObjectId ],
       ref: "Game",
     },
-    
+   
     favorites: {
       type:[ mongoose.Schema.Types.ObjectId ],
       ref: "Game",
     },
     
+    friends: {
+      type:[ mongoose.Schema.Types.ObjectId ],
+      ref: "User",
+    },
+
     userImg: {
       type: String,
     },

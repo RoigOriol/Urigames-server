@@ -46,6 +46,10 @@ const gameSchema=new mongoose.Schema({
     playTime: {
         type: String,
         required: true
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     }
 })
 const Game = mongoose.model("Game", gameSchema)

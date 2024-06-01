@@ -1,17 +1,37 @@
 const router = require("express").Router();
+const Comment = require("../models/Comment.model");
+const { isTokenValid } = require("../middlewares/auth.middlewares");
+isTokenValid;
 
-const Comment = require("../models/Comment.model.js");
 
-//! en el caso que quisiera eliminar un juego de la colección tendria que eliminarlo de fav de usurio y tendria que importar el USER
-
-/*const User = require("../models/User.model.js");
-const Game = require("../models/Game.model.js");*/
-
-//crear comentarios
-router.post("/", async (req, res, next) => {
-  console.log(req.body);
+// GET "/api/comments"
+router.get("/", async (req, res, next) => {
   try {
-    await Comment.create({ //!buscar la manera de encontrar el iD token y pedirle el id del juego
+    const comments = await Comment.find().populate("user").populate("game");
+    res.status(200).json(comments);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET "/api/comments/commentId"
+router.get("/:commentId", async (req, res, next) => {
+  try {
+    const response = await Comment.findById(req.params.commentId)
+      .populate("user")
+      .populate("game");
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST "/api/comments"
+router.post("/",isTokenValid, async (req, res, next) => {
+  try {
+    await Comment.create({
+      user: req.body.user,
+      game: req.body.game,
       comment: req.body.comment,
     });
     res.sendStatus(201);
@@ -20,30 +40,27 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-//editar comentarios
-router.patch("/comment/:commentId", async (req, res, next) => {
-  console.log(req.body);
+// PUT "/api/comments" => editar data(comentarios)
+router.put("/:commentId",isTokenValid, async (req, res, next) => {
   try {
-    await Comment.findByIdAndUpdate(
-      req.params.commentId,
-      { $addToSet: { comment: req.body.comment } } //!DUDA ADDTOSET SOLO ELEMENTOS DE UN ARRAY
-      // VOLVER A REVISAR CLASE
-    );
-    res.sendStatus(202);
+    await Comment.findByIdAndUpdate(req.params.commentId, {
+      comment: req.body.comment,
+    });
+    res.sendStatus(201);
   } catch (error) {
     next(error);
   }
 });
 
-//eliminar comentarios
-
-router.delete("/:commentId", async (req, res, next) => {
+//DELEETE
+router.delete("/:commentId", isTokenValid, async (req, res, next) => {
   try {
     await Comment.findByIdAndDelete(req.params.commentId);
-    res.sendStatus(202);
+    res.status(200).json({ message: "comment deleted" });
   } catch (error) {
     next(error);
   }
 });
+
 
 module.exports = router;

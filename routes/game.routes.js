@@ -1,14 +1,13 @@
 const router = require("express").Router();
 const Game = require("../models/Game.model.js");
+const { isTokenValid } = require("../middlewares/auth.middlewares");
+isTokenValid
 
-//!empezar CREAR EL JUEGO, editarlo, eliminarlo, ruta  para buscar probar ruta de una en una
-
-//CREAR  juegos  POST
-
+// CREAR juegos POST
 router.post("/", (req, res, next) => {
   console.log(req.body);
 
-  // para crear documentos usamos el modelo y el metodo .create()
+  // Para crear documentos usamos el modelo y el método .create()
   Game.create({
     title: req.body.title,
     designer: req.body.designer,
@@ -18,6 +17,7 @@ router.post("/", (req, res, next) => {
     description: req.body.description,
     image: req.body.image,
     playTime: req.body.playTime,
+    user: req.payload._id
   })
     .then((response) => {
       console.log("game creado");
@@ -28,22 +28,20 @@ router.post("/", (req, res, next) => {
     });
 });
 
-// @TODO: Buscar todos los juegos   GET
+// Buscar todos los juegos GET
 router.get("/", async (req, res, next) => {
   console.log("usuario accediendo a ruta search");
   console.log(req.query);
   try {
     const response = await Game.find();
-
     res.status(200).json(response);
   } catch (error) {
     next(error);
   }
 });
 
-//Buscar  juegos id  GET
-
-router.get("/:gameId", async (req, res) => {
+// Buscar juegos por ID GET
+router.get("/:gameId", async (req, res, next) => {
   console.log(req.params);
 
   try {
@@ -54,23 +52,91 @@ router.get("/:gameId", async (req, res) => {
   }
 });
 
+//Buscar juegos por título GET
+router.get("/game/search", async (req, res, next) => {
+  console.log("usuario accediendo a ruta search");
+  console.log(req.query);
+  try {
+    const response = await Game.find(req.query).select({ title: 1 });
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+//! preguntar jorge http://localhost:5005/api/game/game/search?genre=Fantasy
+//@TODO  Buscar juegos por género GET
+router.get("/game/search", async (req, res, next) => {
+  console.log("usuario accediendo a ruta search");
+  console.log(req.query);
+  try {
+    const response = await Game.find(req.query).select({ genre: 1 });
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
+//Editar juego total PUT
+router.put("/:gameId", async (req, res, next) => {
+  try {
+    const response = await Game.findByIdAndUpdate(
+      req.params.gameId,
+      {
+        title: req.body.title,
+        designer: req.body.designer,
+        genre: req.body.genre,
+        minPlayers: req.body.minPlayers,
+        maxPlayers: req.body.maxPlayers,
+        description: req.body.description,
+        image: req.body.image,
+        playTime: req.body.playTime,
+      },
+      { new: true }
+    );
+    res.status(200).json("juego editado");
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+//! preguntar jorge //! preguntar jorge http://localhost:5005/api/game/game/search?genre=Fantasy posible redundancia con la llamada anterior?
+
+/*router.get("/game/search", async (req, res, next) => {
+  console.log("usuario accediendo a ruta search");
+  console.log(req.query);
+  try {
+    const response = await Game.find(req.query).select({ title: 1, designer: 1, genre: 1, minPlayers: 1, maxPlayers: 1, description: 1, image: 1, playTime: 1 });
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+}); */
 
 
 
 
 
-// @TODO: DELETE
-router.delete("/:gameId", async (req, res, next) => {
+//Editar juego parcial Patch
 
+router.patch("/:gameId", async (req, res, next) => {
     try {
-      
-      await Game.findByIdAndDelete(req.params.gameId)
-      res.sendStatus(202)
-  
+      const response = await Game.findByIdAndUpdate(req.params.gameId, req.body, { new: true });
+      res.status(200).json(response);
     } catch (error) {
-      next(error) 
+      next(error);
     }
-  
-  })
+  });
+
+
+// Borrar juego DELETE
+router.delete("/:gameId", async (req, res, next) => {
+  try {
+    await Game.findByIdAndDelete(req.params.gameId);
+    res.sendStatus(202);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
