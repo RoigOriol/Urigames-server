@@ -17,7 +17,6 @@ router.post("/", (req, res, next) => {
     description: req.body.description,
     image: req.body.image,
     playTime: req.body.playTime,
-    user: req.payload._id,
   })
     .then((response) => {
       console.log("game creado");
@@ -53,7 +52,7 @@ router.get("/:gameId", async (req, res, next) => {
 });
 
 //Buscar juegos por título GET
-router.get("/game/search", async (req, res, next) => {
+router.get("/title/search", async (req, res, next) => {
   console.log("usuario accediendo a ruta search");
   console.log(req.query);
   try {
@@ -63,9 +62,9 @@ router.get("/game/search", async (req, res, next) => {
     next(error);
   }
 });
-//! preguntar jorge http://localhost:5005/api/game/game/search?genre=Fantasy
+
 //@TODO  Buscar juegos por género GET
-router.get("/game/search", async (req, res, next) => {
+router.get("/genre/search", async (req, res, next) => {
   console.log("usuario accediendo a ruta search");
   console.log(req.query);
   try {

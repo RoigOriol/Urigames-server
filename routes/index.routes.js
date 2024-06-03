@@ -24,4 +24,7 @@ router.use("/comment", commentRouter);
 const favouriteRouter = require("./favorite.routes.js");
 router.use("/user", favouriteRouter);
 
+const collectionRouter = require("./gameCollection.routes.js");
+router.use("/user", collectionRouter);
+
 module.exports = router;
