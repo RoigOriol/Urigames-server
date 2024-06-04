@@ -3,11 +3,12 @@ const Comment = require("../models/Comment.model");
 const { isTokenValid } = require("../middlewares/auth.middlewares");
 isTokenValid;
 
-
 // GET "/api/comments"
 router.get("/", async (req, res, next) => {
   try {
-    const comments = await Comment.find().populate("user").populate("game");
+    const comments = await Comment.find()
+      .populate({ path: "user", select: "username" })
+      .populate("game");
     res.status(200).json(comments);
   } catch (error) {
     next(error);
@@ -18,8 +19,8 @@ router.get("/", async (req, res, next) => {
 router.get("/:commentId", async (req, res, next) => {
   try {
     const response = await Comment.findById(req.params.commentId)
-      .populate("user")
-      .populate("game");
+      .populate("userId")
+      .populate("gameId");
     res.status(200).json(response);
   } catch (error) {
     next(error);
@@ -27,10 +28,10 @@ router.get("/:commentId", async (req, res, next) => {
 });
 
 // POST "/api/comments"
-router.post("/",isTokenValid, async (req, res, next) => {
+router.post("/", isTokenValid, async (req, res, next) => {
   try {
     await Comment.create({
-      user: req.body.user,
+      user: req.payload._id,
       game: req.body.game,
       comment: req.body.comment,
     });
@@ -41,7 +42,7 @@ router.post("/",isTokenValid, async (req, res, next) => {
 });
 
 // PUT "/api/comments" => editar data(comentarios)
-router.put("/:commentId",isTokenValid, async (req, res, next) => {
+router.put("/:commentId", isTokenValid, async (req, res, next) => {
   try {
     await Comment.findByIdAndUpdate(req.params.commentId, {
       comment: req.body.comment,
@@ -61,6 +62,5 @@ router.delete("/:commentId", isTokenValid, async (req, res, next) => {
     next(error);
   }
 });
-
 
 module.exports = router;

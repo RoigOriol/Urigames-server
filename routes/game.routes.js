@@ -17,6 +17,7 @@ router.post("/", (req, res, next) => {
     description: req.body.description,
     image: req.body.image,
     playTime: req.body.playTime,
+    user: req.payload._id,
   })
     .then((response) => {
       console.log("game creado");
@@ -32,7 +33,10 @@ router.get("/", async (req, res, next) => {
   console.log("usuario accediendo a ruta search");
   console.log(req.query);
   try {
-    const response = await Game.find();
+    const response = await Game.find().populate({
+      path: "owner",
+      select: "username",
+    });
     res.status(200).json(response);
   } catch (error) {
     next(error);
@@ -63,7 +67,7 @@ router.get("/title/search", async (req, res, next) => {
   }
 });
 
-//@TODO  Buscar juegos por género GET
+// Buscar juegos por género GET
 router.get("/genre/search", async (req, res, next) => {
   console.log("usuario accediendo a ruta search");
   console.log(req.query);
@@ -97,19 +101,6 @@ router.put("/:gameId", async (req, res, next) => {
     next(error);
   }
 });
-
-//! preguntar jorge //! preguntar jorge http://localhost:5005/api/game/game/search?genre=Fantasy posible redundancia con la llamada anterior?
-
-/*router.get("/game/search", async (req, res, next) => {
-  console.log("usuario accediendo a ruta search");
-  console.log(req.query);
-  try {
-    const response = await Game.find(req.query).select({ title: 1, designer: 1, genre: 1, minPlayers: 1, maxPlayers: 1, description: 1, image: 1, playTime: 1 });
-    res.status(200).json(response);
-  } catch (error) {
-    next(error);
-  }
-}); */
 
 //Editar juego parcial Patch
 

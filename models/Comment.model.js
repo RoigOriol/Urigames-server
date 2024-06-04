@@ -1,22 +1,25 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const commentSchema = new mongoose.Schema({
-  comment: {
-    type: String,
-    required: [true, "Description is required."]
+const commentSchema = new Schema(
+  {
+    comment: {
+      type: String,
+      required: [true, "Description is required."],
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    game: {
+      type: Schema.Types.ObjectId,
+      ref: "Game",
+    },
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-  gameId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Game"
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment = model("Comment", commentSchema);
 
 module.exports = Comment;

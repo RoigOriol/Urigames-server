@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
@@ -20,17 +19,17 @@ const userSchema = new Schema(
     },
 
     gameCollection: {
-      type:[ mongoose.Schema.Types.ObjectId ],
+      type: Schema.Types.ObjectId,
       ref: "Game",
     },
-   
+
     favorites: {
-      type:[ mongoose.Schema.Types.ObjectId ],
+      type: Schema.Types.ObjectId,
       ref: "Game",
     },
-    
+
     friends: {
-      type:[ mongoose.Schema.Types.ObjectId ],
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
 

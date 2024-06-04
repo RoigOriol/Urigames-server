@@ -22,9 +22,9 @@ const commentRouter = require("./comment.routes.js");
 router.use("/comment", commentRouter);
 
 const favouriteRouter = require("./favorite.routes.js");
-router.use("/user", favouriteRouter);
+router.use("/fav", favouriteRouter);
 
 const collectionRouter = require("./gameCollection.routes.js");
-router.use("/user", collectionRouter);
+router.use("/collection", collectionRouter);
 
 module.exports = router;
