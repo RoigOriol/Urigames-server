@@ -38,12 +38,10 @@ const gameSchema = new Schema(
       type: String,
       required: true,
     },
-
     image: {
       type: String,
       required: true,
     },
-
     playTime: {
       type: String,
       required: true,

@@ -8,7 +8,6 @@ const {
   isTokenValid,
   isUserAdmin,
 } = require("../middlewares/auth.middlewares.js");
-//aqui van todas las rutas de autenticación
 
 // POST "/api/auth/signup" => recibir data(mail, username y password) del usuario y crearlo en la BD
 router.post("/signup", async (req, res, next) => {
@@ -108,6 +107,7 @@ router.post("/login", async (req, res, next) => {
     const payload = {
       _id: foundUser._id,
       email: foundUser.email,
+      role: foundUser.role,
       //cualquier información estática del usuario deberia ir aqui
     };
 
