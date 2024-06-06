@@ -6,7 +6,7 @@ router.get("/:userId", async (req, res, next) => {
   console.log(req.params);
 
   try {
-    const response = await User.findById(req.params.userId);
+    const response = await User.findById(req.params.userId).populate("gameCollection")
     res.status(200).json(response);
   } catch (error) {
     next(error);
@@ -73,13 +73,12 @@ router.patch("/:gameId/collections", isTokenValid, async (req, res, next) => {
         $addToSet: { gameCollection: req.params.gameId }
       });
 
-      // res.json({ message: "Game added to collection" });
-      // Si ya está, eliminarlo
+    
     } else {
       await User.findByIdAndUpdate(req.payload._id, {
         $pull: { gameCollection: req.params.gameId }
       });
-      //res.json({ message: "Game removed from collection" });
+    
     }
     res.json({ message: "Updated collection game" });
   } catch (error) {
