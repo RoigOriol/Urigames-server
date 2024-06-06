@@ -4,28 +4,24 @@ const { isTokenValid } = require("../middlewares/auth.middlewares");
 isTokenValid;
 
 // CREAR juegos POST
-router.post("/", (req, res, next) => {
+router.post("/", isTokenValid, async (req, res, next) => {
   console.log(req.body);
-
-  // Para crear documentos usamos el modelo y el método .create()
-  Game.create({
-    title: req.body.title,
-    designer: req.body.designer,
-    genre: req.body.genre,
-    minPlayers: req.body.minPlayers,
-    maxPlayers: req.body.maxPlayers,
-    description: req.body.description,
-    image: req.body.image,
-    playTime: req.body.playTime,
-    user: req.payload._id,
-  })
-    .then((response) => {
-      console.log("game creado");
-      res.sendStatus(201);
-    })
-    .catch((error) => {
-      next(error);
+  try {
+    Game.create({
+      title: req.body.title,
+      designer: req.body.designer,
+      genre: req.body.genre,
+      minPlayers: req.body.minPlayers,
+      maxPlayers: req.body.maxPlayers,
+      description: req.body.description,
+      image: req.body.image,
+      playTime: req.body.playTime,
     });
+    const response = await Game.create();
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Buscar todos los juegos GET
@@ -33,10 +29,7 @@ router.get("/", async (req, res, next) => {
   console.log("usuario accediendo a ruta search");
   console.log(req.query);
   try {
-    const response = await Game.find().populate({
-      path: "owner",
-      select: "username",
-    });
+    const response = await Game.find();
     res.status(200).json(response);
   } catch (error) {
     next(error);

@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 
 function isTokenValid(req, res, next) {
   try {
-    console.log(req.headers.authorization)
+    console.log(req.headers.authorization);
     const token = req.headers.authorization.split(" ")[1]; // coje el token del string
-    console.log(token)
+    console.log(token);
 
     // validar el token
     const payload = jwt.verify(token, process.env.TOKEN_SECRET);

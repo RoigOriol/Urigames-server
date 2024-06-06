@@ -4,15 +4,17 @@ const commentSchema = new Schema(
   {
     comment: {
       type: String,
-      required: [true, "Description is required."],
+      required: [true, "Comment is required."],
     },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: [true, "User reference is required."],
     },
     game: {
       type: Schema.Types.ObjectId,
       ref: "Game",
+      required: [true, "Game reference is required."],
     },
   },
   {

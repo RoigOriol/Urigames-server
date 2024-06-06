@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User.model.js");
+const { isTokenValid } = require("../middlewares/auth.middlewares.js");
 
 router.get("/:userId", async (req, res, next) => {
   console.log(req.params);
@@ -12,32 +13,7 @@ router.get("/:userId", async (req, res, next) => {
   }
 });
 
-// POST creamos users
-router.post("/", async (req, res, next) => {
-  console.log(req.body);
 
-  try {
-    const response = await User.create({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      gameCollection: req.body.gameCollection,
-      favorites: req.body.favorites,
-      friends: req.body.friends,
-      userImg: req.body.userImg,
-      role: req.body.role,
-    });
-
-    console.log("user creado");
-    res.sendStatus(201);
-  } catch (error) {
-    next(error);
-  }
-});
-
-//! ACCIONES QUE MODIFICAN EL USUARIO: subir foto de perfil/ / añadir amigos/ / favorites/ gameCollection:
-
-//! preguntar jorge si el admin es el creador de los juegos si game collection i favoriteos va en juego o en usuario.
 
 // Editar usuario total PUT
 router.put("/:userId", async (req, res, next) => {
@@ -62,7 +38,6 @@ router.put("/:userId", async (req, res, next) => {
   }
 });
 
-//! preguntar jorge si hace falta?
 
 // Editar usuario parcial PATCH
 router.patch("/:userId", async (req, res, next) => {
@@ -81,6 +56,32 @@ router.delete("/:userId", async (req, res, next) => {
   try {
     await User.findByIdAndDelete(req.params.userId);
     res.sendStatus(202);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/:gameId/collections", isTokenValid, async (req, res, next) => {
+  // cogemos el user desde la BD
+  try {
+   
+    const response = await User.findById(req.payload._id);
+    console.log(response);
+    
+    if (!response.gameCollection.includes(req.params.gameId)) {
+      await User.findByIdAndUpdate(req.payload._id, {
+        $addToSet: { gameCollection: req.params.gameId }
+      });
+
+      // res.json({ message: "Game added to collection" });
+      // Si ya está, eliminarlo
+    } else {
+      await User.findByIdAndUpdate(req.payload._id, {
+        $pull: { gameCollection: req.params.gameId }
+      });
+      //res.json({ message: "Game removed from collection" });
+    }
+    res.json({ message: "Updated collection game" });
   } catch (error) {
     next(error);
   }

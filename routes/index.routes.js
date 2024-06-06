@@ -20,6 +20,9 @@ const favouriteRouter = require("./favorite.routes.js");
 router.use("/fav", favouriteRouter);
 
 const collectionRouter = require("./gameCollection.routes.js");
-router.use("/collection", collectionRouter);
+router.use("/collections", collectionRouter);
+
+const uploadRoutes = require("./upload.routes");
+router.use("/upload", uploadRoutes);
 
 module.exports = router;

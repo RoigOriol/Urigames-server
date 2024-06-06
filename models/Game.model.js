@@ -40,15 +40,11 @@ const gameSchema = new Schema(
     },
     image: {
       type: String,
-      required: true,
+      required: false,
     },
     playTime: {
-      type: String,
-      required: true,
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: Number,
+      required: false,
     },
   },
   {
